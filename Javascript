@@ -1,0 +1,85 @@
+// This code is going to make sure what is in the canvas will be IN the canvas
+context = document.getElementById('canvas').getContext("2D");
+
+// This is making sure the mouse button is clicked before the line can be made
+addEventListener = ('click', function(e) {
+	var mouseX = e.pageX - this.offsetLeft;
+	var mouseY = e.pageY - this.offsetTop;
+
+	paint = true
+	addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+	redraw();
+});
+
+// The event is creating the line as the mouse moves
+addEventListener = ('hold', function(e) {
+	if(paint) {
+		addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+	redraw();
+	}
+});
+
+// This stops creating the line when you release the mouse button
+addEventListener = ('release', function(e) {
+	paint = false;
+});
+
+var clickX = new Array();
+var clickY = new Array();
+var clickDrag = new Array();
+var paint;
+
+function addClick(x, y, dragging) {
+	clickX.push(x);
+	clickY.push(y);
+	clickDrag.push(dragging);
+	if(curTool == "eraser") {
+		clickColor.push("white")
+	} else {
+		clickColor.push(curColor);
+	}
+	clickSize.push(curSize);
+}
+
+// This adds the clearing function
+function redraw() {
+	context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+// These are the default settings for the line
+	context.lineJoin = "round";
+// This actually creates the line
+	for(var i=0, i < clickX.length; i++) {
+		context.beginPath();
+		if(clickDrag[i] && i) {
+			context.moveTo(clickX[i-1], clickY[i-1]);
+		} else {
+			context.moveTo(clickX[i]-1, clickY[i]);
+		}
+		context.lineTo(clickX[i], clickY[i]);
+		context.closePath();
+		context.strokeStyle = clickColor[i];
+		context.lineWidth = radius;
+		context.stroke();
+	}
+}
+
+// This is the selection of colors that the user can use
+var colorBlack = "#000000";
+var colorWhite = "#ffffff";
+var colorRed = "#ff0000";
+var colorBlue = "#0000ff";
+var colorYellow = "#ffff00";
+var colorGreen = "#009933";
+var colorBrown = "#004000";
+var colorPurple = "#000066";
+
+// This sets the default color and what determines the currently selected color
+var curColor = colorBlack;
+var clickColor = new Array
+
+// This allows the size to be changed
+var clickSize = new Array();
+var curSize = 6px;
+
+// This allows us to switch into using the eraser and back
+var clickTool = new Array();
+var curTool = "pen"
